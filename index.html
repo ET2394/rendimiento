@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gráfica de Producción</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="miGrafica"></canvas>
+    <script>
+        function obtenerDatos() {
+            fetch('Enero.json') // Asegúrate de que esta ruta sea correcta
+                .then(response => response.json())
+                .then(data => {
+                    const etiquetas = data.map(fila => fila.Fecha);
+                    const valores = data.map(fila => fila["N° Piezas"]);
+
+                    new Chart(document.getElementById('miGrafica'), {
+                        type: 'line', // Puedes cambiar el tipo de gráfica aquí
+                        data: {
+                            labels: etiquetas,
+                            datasets: [{
+                                label: 'Producción de Piezas',
+                                data: valores,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }).catch(error => {
+                    console.error('Error al cargar el archivo JSON:', error);
+                });
+        }
+
+        // Llamar a la función para obtener los datos y crear la gráfica
+        obtenerDatos();
+
+        // Actualizar la gráfica cada 5 segundos
+        setInterval(obtenerDatos, 5000);
+    </script>
+</body>
+</html>
